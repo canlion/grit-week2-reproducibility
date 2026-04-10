@@ -1,6 +1,6 @@
 # week2-reproducibility
 
-Spring Boot 애플리케이션을 `bootJar`로 빌드한 뒤, Docker 이미지 생성 및 `docker compose`로 전체 환경(App, MySQL, Kafka, Redis)을 실행하는 방법을 정리한 문서입니다.
+Spring Boot 애플리케이션을 `bootJar`로 빌드한 뒤, Docker 이미지 생성 및 `docker compose`로 전체 환경(App, MySQL, Kafka, Redis)을 실행합니다.
 
 ---
 
