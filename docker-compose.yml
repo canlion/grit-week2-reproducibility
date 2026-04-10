@@ -1,6 +1,7 @@
 services:
   app:
     image: week2-reproducibility-app:1.0
+    build: .
     container_name: week2-reproducibility-app
     ports:
       - "8080:8080"
