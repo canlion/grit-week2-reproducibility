@@ -34,6 +34,13 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'io.cucumber:cucumber-java:7.23.0'
+	testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.23.0'
+	testImplementation 'io.cucumber:cucumber-spring:7.23.0'
+	testImplementation 'org.junit.platform:junit-platform-suite'
+	testImplementation 'org.hamcrest:hamcrest'
+	testImplementation 'io.rest-assured:rest-assured'
 }
 
 tasks.named('test') {
