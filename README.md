@@ -40,3 +40,9 @@ OK
 ```shell
 docker compose down
 ```
+
+## 시스템 테스트
+
+```shell
+./gradlew test
+```
