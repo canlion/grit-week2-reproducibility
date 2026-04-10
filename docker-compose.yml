@@ -1,0 +1,65 @@
+services:
+  app:
+    image: week2-reproducibility-app:1.0
+    container_name: week2-reproducibility-app
+    ports:
+      - "8080:8080"
+    environment:
+      # 모든 서비스는 하나의 네트워크에 묶임 - 서비스명을 호스트명으로 사용
+      DB_URL: jdbc:mysql://db:3306/week2_reproducibility_db
+      DB_USER: root
+      DB_PASSWORD: rootroot
+      KAFKA_HOST: broker
+      REDIS_HOST: cache
+    # 나열된 서비스의 상태에 따라 app 서비스 시작 시점 조정
+    depends_on:
+      db:
+        # DB가 준비 완료되기까지 대기
+        condition: service_healthy
+      broker:
+        condition: service_started
+      cache:
+        condition: service_started
+
+  db:
+    image: mysql:8.4.8
+    container_name: week2-reproducibility-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: week2_reproducibility_db
+      LANG: C.UTF-8
+      character-set-server: utf8mb4
+      collation-server: utf8mb4_unicode_ci
+    # 헬스체크 방식 지정
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-prootroot" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  broker:
+    image: apache/kafka:3.8.0
+    container_name: week2-reproducibility-broker
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+
+  cache:
+    image: redis:8.6.2
+    container_name: week2-reproducibility-cache
+    ports:
+      - "6379:6379"
